@@ -87,5 +87,15 @@ class SinhVien {
           return false;
      }
  
+     public function getSinhVienByMaSV($maSV) {
+        $query = "SELECT * FROM SinhVien WHERE MaSV = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $maSV);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Trả về dữ liệu sinh viên nếu tìm thấy
+        return $result->fetch_object();
+    }
 }
 ?>
