@@ -1,54 +1,35 @@
 <?php
-session_start(); // Bắt đầu session
+include_once 'D:\webdangkyhp\models\HocPhan.php';
 
-// Kiểm tra xem sinh viên đã đăng nhập chưa
-if (!isset($_SESSION['MaSV'])) {
-    header("Location: login.php"); // Chuyển hướng về trang đăng nhập nếu chưa đăng nhập
-    exit();
+class HocPhanController {
+    private $hocPhanModel;
+
+    public function __construct($db) {
+        $this->hocPhanModel = new HocPhan($db);
+    }
+
+    // Hiển thị danh sách học phần
+    public function index() {
+        $hocPhanList = $this->hocPhanModel->getAll();
+        include_once 'views/hocphan/index.php';
+    }
+
+    // Đăng ký học phần
+    public function register() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $maSV = $_POST['MaSV']; // Mã sinh viên
+            $maHP = $_POST['MaHP']; // Mã học phần
+
+            if ($this->hocPhanModel->registerHocPhan($maSV, $maHP)) {
+                echo "<script>alert('Đăng ký học phần thành công!');</script>";
+            } else {
+                echo "<script>alert('Đăng ký học phần thất bại!');</script>";
+            }
+        }
+
+        // Hiển thị form đăng ký học phần
+        $hocPhanList = $this->hocPhanModel->getAll();
+        include_once 'views/hocphan/register.php';
+    }
 }
-
-include_once 'D:\webdangkyhp\config\database.php'; // Kết nối cơ sở dữ liệu
-include_once 'D:\webdangkyhp\models\HocPhan.php'; // Gọi Models HocPhan
-
-// Tạo đối tượng HocPhan
-$hocPhanModel = new HocPhan($conn);
-
-// Lấy danh sách học phần
-$hocPhanList = $hocPhanModel->getAllHocPhan();
 ?>
-
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Danh Sách Học Phần</title>
-</head>
-<body>
-    <h1>DANH SÁCH HỌC PHẦN</h1>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Mã Học Phần</th>
-                <th>Tên Học Phần</th>
-                <th>Số Tín Chỉ</th>
-                <th>Thao Tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($row = $hocPhanList->fetch_assoc()) { ?>
-                <tr>
-                    <td><?php echo $row['MaHP']; ?></td>
-                    <td><?php echo $row['TenHP']; ?></td>
-                    <td><?php echo $row['SoTinChi']; ?></td>
-                    <td>
-                        <a href="dangky.php?MaHP=<?php echo $row['MaHP']; ?>" style="color: green;">Đăng Ký</a>
-                    </td>
-                </tr>
-            <?php } ?>
-        </tbody>
-    </table>
-
-    <a href="logout.php">Đăng Xuất</a>
-</body>
-</html>

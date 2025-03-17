@@ -1,11 +1,11 @@
 <?php
 // Autoload các file cần thiết
 include_once 'D:\webdangkyhp\config\database.php';
-include_once 'models/SinhVien.php';
-include_once 'models/HocPhan.php';
-include_once 'controllers/SinhVienController.php';
-include_once 'controllers/HocPhanController.php';
-include_once 'controllers/DangNhapController.php';
+include_once 'D:\webdangkyhp\models\SinhVien.php';
+include_once 'D:\webdangkyhp\models\HocPhan.php';
+include_once 'D:\webdangkyhp\controllers\SinhVienController.php';
+include_once 'D:\webdangkyhp\controllers\HocPhanController.php';
+include_once 'controllers/AuthController.php';
 
 // Khởi tạo kết nối cơ sở dữ liệu
 $database = new Database();
@@ -55,17 +55,12 @@ switch ($page) {
         break;
 
     case 'dangnhap':
-        $controller = new DangNhapController($db);
+        $controller = new AuthController($db);
         switch ($action) {
             case 'index': // Giao diện đăng nhập
-                $controller->index();
-                break;
-            case 'login': // Xử lý đăng nhập
                 $controller->login();
                 break;
-            case 'logout': // Xử lý đăng xuất
-                $controller->logout();
-                break;
+           
             default:
                 echo "Hành động không hợp lệ!";
         }
